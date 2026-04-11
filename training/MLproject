@@ -1,0 +1,34 @@
+name: Fire-detection
+
+docker_env:
+  image: fire-detection-training
+  volumes: ["$(pwd):/home/app"]
+  environment: [
+    "MLFLOW_TRACKING_URI",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_DEFAULT_REGION",
+    "S3_BUCKET",
+    "DATA_YAML"
+  ]
+
+entry_points:
+  main:
+    parameters:
+      epochs: {type: int,   default: 10}
+      imgsz: {type: int,   default: 640}
+      batch: {type: int,   default: 16}
+      freeze: {type: int,   default: 10}
+      lr0: {type: float, default: 0.01}
+      hsv_v: {type: float, default: 0.5}
+      hsv_s: {type: float, default: 0.5}
+      run_name: {type: str,   default: "V1"}
+    command: "python train.py
+              --epochs {epochs}
+              --imgsz {imgsz}
+              --batch {batch}
+              --freeze {freeze}
+              --lr0 {lr0}
+              --hsv_v {hsv_v}
+              --hsv_s {hsv_s}
+              --run_name {run_name}"

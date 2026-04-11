@@ -1,0 +1,19 @@
+# Credentials
+secrets.sh
+.env
+*.csv
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# YOLO outputs
+runs/
+
+# Models
+*.pt
+
+# External repos 
+Fire-smoke-detection-yolov11/

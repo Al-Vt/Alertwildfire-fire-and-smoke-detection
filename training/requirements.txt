@@ -1,0 +1,5 @@
+python-dotenv
+ultralytics
+mlflow
+pyfiglet 
+boto3
