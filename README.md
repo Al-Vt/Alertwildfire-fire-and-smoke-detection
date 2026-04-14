@@ -73,7 +73,7 @@ On every push to `main`, GitHub Actions automatically:
 
 ## Environment Variables
 
-Create a `.env` file at the root (never commit it):
+To use this project, create a secrets.sh file with the following variables:
 
 ```bash
 # AWS
