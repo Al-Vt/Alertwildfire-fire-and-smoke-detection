@@ -1,19 +1,16 @@
-# Credentials
+# Secrets
+*.csv
 secrets.sh
 .env
-*.csv
 *.pem
 
-# Python
+# Python cache
 __pycache__/
 *.pyc
-.ipynb_checkpoints/
 
-# YOLO outputs
-runs/
+# Jupyter
+*.ipynb
 
-# Models
-*.pt
-
-# External repos 
-Fire-smoke-detection-yolov11/
+# Parasites
+training/-e
+training/fire-detection-training

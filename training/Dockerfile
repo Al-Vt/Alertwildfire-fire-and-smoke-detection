@@ -1,6 +1,7 @@
-FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime
-
+FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
 RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
     curl \
     unzip \
     libgl1 \
@@ -17,6 +18,7 @@ RUN pip install -r requirements.txt
 
 # Copy training script
 WORKDIR /app
-COPY train.py .
+COPY train.py . 
+COPY utils.py .
 
-CMD ["python", "train.py"]
+CMD ["python3", "train.py"]

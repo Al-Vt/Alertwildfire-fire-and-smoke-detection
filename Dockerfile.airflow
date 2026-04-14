@@ -1,0 +1,17 @@
+FROM apache/airflow:2.8.0
+
+USER root
+
+# Install Chrome for the scrapper
+RUN apt-get update && apt-get install -y \
+    wget gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+    && apt-get update && apt-get install -y google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
+
+USER airflow
+
+# Install scraper Python dependencies
+COPY scraper/requirements.txt /tmp/scraper-requirements.txt
+RUN pip install --no-cache-dir -r /tmp/scraper-requirements.txt

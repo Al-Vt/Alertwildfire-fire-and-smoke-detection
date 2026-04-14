@@ -1,5 +1,9 @@
+torch
+torchvision
 python-dotenv
 ultralytics
 mlflow
-pyfiglet 
+pyfiglet
+pytest
 boto3
+optuna
