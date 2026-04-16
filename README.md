@@ -72,7 +72,7 @@ Every push to `main` runs two jobs in sequence:
 
 ## Running locally
 
-<<<<<<< HEAD
+
 To use this project, create a secrets.sh file with the following variables:
 =======
 **Start Airflow:**
