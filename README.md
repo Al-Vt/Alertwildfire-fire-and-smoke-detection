@@ -1,4 +1,5 @@
-# Fire Detection — Automated Wildfire Monitoring
+# Fire Detection 
+## Automated Wildfire Monitoring
 
 ALERTWildfire.org operates 165 surveillance cameras across the western United States. Today, American volunteers manually watch these feeds to spot fires. This project replaces that manual process with a fine-tuned YOLO model that runs inference on camera snapshots every 5 minutes.
 
