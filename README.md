@@ -22,6 +22,23 @@ The scraper grabs frames from all 165 cameras, runs them through the model, and 
 
 ---
 
+## Dataset
+
+The training set combines 6 public fire/smoke detection datasets into a single corpus of **109,121 images** (train: 85,627 / val: 12,451 / test: 11,043).
+
+| # | Dataset | Source |
+|---|---|---|
+| 1 | Smoke-Fire-Detection-YOLO | Kaggle (sayedgamal99) |
+| 2 | Fire/Smoke Detection YOLO v9 | Kaggle (roscoekerby) |
+| 3 | fire-smoke-obstacle-dataset | Roboflow |
+| 4 | D-Fire *(night only)* | Kaggle (shubhamkarande13) |
+| 5 | FASDD — Flame And Smoke Detection *(night only)* | Public |
+| 6 | Smoke night dataset *(night only)* | Roboflow |
+
+ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward night conditions: **51% of images are nighttime scenes**, filtered using brightness thresholds and CLIP-based relevance scoring.
+
+---
+
 ## Stack
 
 | Layer | Tool |
@@ -72,11 +89,7 @@ Every push to `main` runs two jobs in sequence:
 
 ## Running locally
 
-
-To use this project, create a secrets.sh file with the following variables:
-=======
 **Start Airflow:**
->>>>>>> 2eb80c6 (Readme)
 
 ```bash
 docker-compose up --build
@@ -126,23 +139,6 @@ EC2_HOST=
 EC2_KEY_PATH=
 EC2_KNOWN_HOSTS=
 ```
-
----
-
-## Dataset
-
-The training set combines 6 public fire/smoke detection datasets into a single corpus of **109,121 images** (train: 85,627 / val: 12,451 / test: 11,043).
-
-| # | Dataset | Source |
-|---|---|---|
-| 1 | Smoke-Fire-Detection-YOLO | Kaggle (sayedgamal99) |
-| 2 | Fire/Smoke Detection YOLO v9 | Kaggle (roscoekerby) |
-| 3 | fire-smoke-obstacle-dataset | Roboflow |
-| 4 | D-Fire *(night only)* | Kaggle (shubhamkarande13) |
-| 5 | FASDD — Flame And Smoke Detection *(night only)* | Public |
-| 6 | Smoke night dataset *(night only)* | Roboflow |
-
-ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward night conditions: **51% of images are nighttime scenes**, filtered using brightness thresholds and CLIP-based relevance scoring.
 
 ---
 
