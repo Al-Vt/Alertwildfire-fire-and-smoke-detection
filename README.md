@@ -151,4 +151,4 @@ EC2_KNOWN_HOSTS=
 | mAP50 | 0.607 |
 | Recall | 0.557 |
 
-Training was stopped early due to cloud computing costs (student project). Similar research papers on fire detection with YOLO recommend training for ~500 epochs to reach convergence — we ran significantly fewer. The model hasn't fully converged, and recall in particular has room to improve. In fire detection, a missed fire is more dangerous than a false alarm, so recall is the metric that matters most.
+Training was stopped early due to cloud computing costs. Similar research papers on fire detection with YOLO recommend training for ~500 epochs to reach convergence — we ran significantly fewer. The model hasn't fully converged, and recall in particular has room to improve. In fire detection, a missed fire is more dangerous than a false alarm, so recall is the metric that matters most.
