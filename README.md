@@ -27,14 +27,15 @@ The scraper grabs frames from all 165 cameras, runs them through the model, and 
 
 The training set combines 6 public fire/smoke detection datasets into a single corpus of **109,121 images** (train: 85,627 / val: 12,451 / test: 11,043).
 
-| # | Dataset | Source |
-|---|---|---|
-| 1 | Smoke-Fire-Detection-YOLO | Kaggle (sayedgamal99) |
-| 2 | Fire/Smoke Detection YOLO v9 | Kaggle (roscoekerby) |
-| 3 | fire-smoke-obstacle-dataset | Roboflow |
-| 4 | D-Fire *(night only)* | Kaggle (shubhamkarande13) |
-| 5 | FASDD — Flame And Smoke Detection *(night only)* | Public |
-| 6 | Smoke night dataset *(night only)* | Roboflow |
+| # | Dataset | Source | Images |
+|---|---|---|---|
+| 1 | Smoke-Fire-Detection-YOLO | Kaggle (sayedgamal99) | ~21,000 |
+| 2 | Fire/Smoke Detection YOLO v9 | Kaggle (roscoekerby) | ~28,000 |
+| 3 | fire-smoke-obstacle-dataset | Roboflow | ~26,000 |
+| 4 | D-Fire *(night only)* | Kaggle (shubhamkarande13) | ~17,000 |
+| 5 | FASDD — Flame And Smoke Detection *(night only)* | Public | ~6,100 |
+| 6 | Smoke night dataset *(night only)* | Roboflow | ~10,000 |
+| | **Total** | | **109,121** |
 
 ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward night conditions: **51% of images are nighttime scenes**, filtered using brightness thresholds and CLIP-based relevance scoring.
 
