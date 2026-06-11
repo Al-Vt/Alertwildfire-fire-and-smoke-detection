@@ -11,8 +11,8 @@ def trigger_retraining():
     ec2_key  = os.environ["EC2_KEY_PATH"]
 
     ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.RejectPolicy()) # Reject unknown SSH key, for security
-        ssh.load_host_keys(os.environ["EC2_KNOWN_HOSTS"])
+    ssh.set_missing_host_key_policy(paramiko.RejectPolicy()) # Reject unknown SSH key, for security
+    ssh.load_host_keys(os.environ["EC2_KNOWN_HOSTS"])
 
     # Commmand in EC2
     ssh.exec_command(

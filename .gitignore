@@ -14,3 +14,5 @@ __pycache__/
 # Parasites
 training/-e
 training/fire-detection-training
+
+inference_api/best.pt

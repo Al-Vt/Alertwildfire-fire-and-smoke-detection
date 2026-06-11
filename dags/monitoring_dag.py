@@ -13,9 +13,8 @@ DRIFT_THRESHOLD = 0.10
 # Detection of data drift in real-world data
 def detect_drift():
     db = DatabaseManager()  # Allows access to stored data
-    images = db.get_pending_images(limit=100)
+    images = db.get_recent_processed_images(limit=100)
     db.close() # Prevents memory leaks and unnecessary open connections
-
     # list of confidence scores
     confidences = [img['confidence'] for img in images if img.get('confidence')]
     if not confidences: # si aucune donnée n'est valide

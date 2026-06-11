@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+ultralytics   # package which contains Yolo
+python-multipart  # allows Fast AFPI to receive uploaded files
+pillow  # For manipulate images
