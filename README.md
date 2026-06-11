@@ -15,7 +15,7 @@ AlertWildfire Cameras
     S3 (raw images)
         ↓  YOLO inference
     Detections → Neon PostgreSQL
-        ↓  drift check every hour (Evidently AI)
+        ↓  drift check every hour
     Retraining triggered on EC2 if needed
 ```
 
@@ -50,9 +50,7 @@ ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward
 | Orchestration | Apache Airflow |
 | Storage | AWS S3 |
 | Database | Neon PostgreSQL |
-| Data warehouse | Snowflake |
 | CI/CD | GitHub Actions |
-| Monitoring | Evidently AI |
 
 ---
 
@@ -70,9 +68,6 @@ ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward
 │   ├── scraper_dag.py              # ETL — every 5 min
 │   ├── monitoring_dag.py           # Drift detection — hourly
 │   └── continuous_training_dag.py  # SSH retraining on EC2
-├── snowflake/
-│   ├── schema.sql          # Star schema (FactDetection + dims)
-│   └── load.py             # S3 → Snowflake loader
 ├── .github/workflows/
 │   └── training.yml        # Run tests → build Docker image
 └── docker-compose.yml
@@ -130,11 +125,6 @@ MLFLOW_TRACKING_URI=
 
 # Database
 DATABASE_URL=
-
-# Snowflake
-SNOWFLAKE_USER=
-SNOWFLAKE_PASSWORD=
-SNOWFLAKE_ACCOUNT=
 
 # EC2
 EC2_HOST=
