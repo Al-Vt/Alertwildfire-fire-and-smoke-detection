@@ -15,4 +15,4 @@ __pycache__/
 training/-e
 training/fire-detection-training
 
-inference_api/best.pt
+inference_API/best.pt

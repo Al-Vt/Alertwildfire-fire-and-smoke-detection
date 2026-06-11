@@ -11,7 +11,7 @@ def run_scraper():
     scraper = AlertWildfireScraper()
     scraper.start()
     try:
-        scraper.scrape_all(max_cameras=3)
+        scraper.scrape_all()
     finally:
         scraper.stop()
 
