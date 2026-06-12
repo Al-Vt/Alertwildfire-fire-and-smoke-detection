@@ -2,6 +2,9 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator, BranchPythonOperator
 from datetime import datetime
 import sys
+import os
+import smtplib
+from email.mime.text import MIMEText
 
 # Adding a directory to import code
 sys.path.insert(0, '/app/scraper')
@@ -26,12 +29,25 @@ def detect_drift():
         return 'data_drift_detected'
     return 'no_drift_detected'
 
-# concluding message
-def log_drift():
-    print("[ALERT] Drift détecté — penser à ré-entraîner le modèle")
 
 def log_no_drift():
-    print("[OK] Pas de drift")
+    print("No drift")
+
+def notify_retraining_needed():
+    sender = os.getenv("ALERT_EMAIL_SENDER")
+    receiver = os.getenv("ALERT_EMAIL_RECEIVER")
+
+    msg = MIMEText("Drift detected in model predictions. Retraining recommended.")
+    msg["Subject"] = "ALERTE WILDFIRE, Drift detected"
+    msg["From"] = sender
+    msg["To"] = receiver
+
+    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+    server.login(sender, os.getenv("ALERT_EMAIL_PASSWORD"))
+    server.sendmail(sender, receiver, msg.as_string())
+    server.quit()
+
+
 
 with DAG(
     dag_id='fire_detection_monitoring',
@@ -41,7 +57,7 @@ with DAG(
 ) as dag:
 
     branch = BranchPythonOperator(task_id='detect_drift', python_callable=detect_drift)
-    drift = PythonOperator(task_id='data_drift_detected', python_callable=log_drift)
+    drift = PythonOperator(task_id='data_drift_detected', python_callable=notify_retraining_needed)
     no_drift = PythonOperator(task_id='no_drift_detected', python_callable=log_no_drift)
 
     branch >> [drift, no_drift]
