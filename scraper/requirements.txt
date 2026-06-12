@@ -1,8 +1,9 @@
-selenium
-webdriver-manager
+selenium  
+webdriver-manager  # To automatically download the correct Chrome driver
 boto3
-psycopg2-binary
+psycopg2-binary  # PostgreSQL connector
 python-dotenv
 requests
 urllib3
 paramiko
+pillow  # To manipulate the model image that is sent by email

@@ -3,3 +3,12 @@ uvicorn[standard]
 ultralytics   # package which contains Yolo
 python-multipart  # allows Fast AFPI to receive uploaded files
 pillow  # For manipulate images
+selenium
+webdriver-manager
+boto3
+psycopg2-binary
+python-dotenv
+requests
+urllib3
+paramiko
+pillow
