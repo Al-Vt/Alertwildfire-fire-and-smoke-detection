@@ -29,7 +29,6 @@ def detect_drift():
         return 'data_drift_detected'
     return 'no_drift_detected'
 
-
 def log_no_drift():
     print("No drift")
 
@@ -46,7 +45,6 @@ def notify_retraining_needed():
     server.login(sender, os.getenv("ALERT_EMAIL_PASSWORD"))
     server.sendmail(sender, receiver, msg.as_string())
     server.quit()
-
 
 
 with DAG(

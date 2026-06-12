@@ -19,7 +19,7 @@ from database import DatabaseManager
 
 INFERENCE_API_URL = os.getenv("INFERENCE_API_URL")
 S3_BUCKET = os.getenv("S3_BUCKET_NAME")
-
+CONFIDENCE_THRESHOLD = float(os.getenv("CONFIDENCE_THRESHOLD", "0.6"))
 
 # Alert if wildfire detected
 def send_alert_email(camera_name, confidence, image_bytes, bbox):
@@ -71,6 +71,8 @@ def run_inference():
                 files={"file": ("image.jpg", image_bytes)},
             )
             detections = response.json().get("detections", [])
+            # Keep only detections above the confidence threshold
+            detections = [d for d in detections if d["confidence"] >= CONFIDENCE_THRESHOLD]
 
             # Detection 
             if detections:
