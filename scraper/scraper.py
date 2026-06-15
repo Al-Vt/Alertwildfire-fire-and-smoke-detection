@@ -22,9 +22,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-# =============================================================================
-# CONFIGURATION
-# =============================================================================
 
 # Création d'un ID unique pour ce lancement (ex: 20260108_123000)
 BATCH_ID = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -37,7 +34,7 @@ ERROR_DIR = BASE_DIR / "errors" / BATCH_ID
 DEFAULT_INTERVAL = 300 
 PAGE_TIMEOUT = 45 
 
-# Ta liste complète
+# List of all cameras on the AlertWildFire website
 CAMERA_URLS = [
     "https://www.alertwildfire.org/?currentFirecam=ca-alder-hill-1&viewMode=Grid",  # Alder Hill 1
     "https://www.alertwildfire.org/?currentFirecam=ca-alpine-meadows-ctc-1&viewMode=Grid",  # Alpine Meadows CTC 1
@@ -165,116 +162,150 @@ CAMERA_URLS = [
     "https://www.alertwildfire.org/?currentFirecam=nv-zephyr-1&viewMode=Grid",  # Zephyr, NV (Big George Ventures) 1
 ]
 
-# =============================================================================
 # LOGGING
-# =============================================================================
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO,    # To get all the information messages about the code
+    format='%(asctime)s - %(levelname)s - %(message)s',  # information displayed in the logs
+    # Save the logs and also send them to the terminal
     handlers=[
         logging.FileHandler(f'scraper_{BATCH_ID}.log'),
         logging.StreamHandler()
     ]
 )
+# associating logs with the corresponding file
 logger = logging.getLogger(__name__)
 
-# =============================================================================
 # HELPERS
-# =============================================================================
 
+# Extracting camera names from the URL
 def get_camera_name_from_url(url: str) -> str:
+    # Take the URL and slice it into 6 parts
     parsed = urlparse(url)
+    # Take the query part and transform it into a dictionary
     params = parse_qs(parsed.query)
+    # Check that the key exists in the dictionary
     if 'currentFirecam' in params:
+        # parse_qs returns lists, so we only extract the string with [0]
         return params['currentFirecam'][0]
     return "unknown_camera"
 
+# Configuring and launching Selenium
 def setup_driver() -> webdriver.Chrome:
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new") 
-    chrome_options.add_argument("--window-size=1920,1080")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--headless=new") # Chrome without a graphical interface
+    chrome_options.add_argument("--window-size=1920,1080")  # defined a dummy resolution for the display
+    chrome_options.add_argument("--no-sandbox") # Disable a security layer so that it no longer runs in a Docker container
+    chrome_options.add_argument("--disable-dev-shm-usage") # dev/shm is too small, so disabling it prevents crashes
     chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled") # hides the fact that Chrome is controlled by a bot
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36") # Mimicks the identity of a real browser
     
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    service = Service(ChromeDriverManager().install())  # Download the correct Chrome driver
+    driver = webdriver.Chrome(service=service, options=chrome_options) # It abandons the process if a page takes too long to load.
     driver.set_page_load_timeout(PAGE_TIMEOUT)
     return driver
 
+# Scaping class
 class AlertWildfireScraper:
     
     def __init__(self):
-        # Création du dossier spécifique à CE run (pour backup local optionnel)
+        # Creating the folder specific to this run
         SUCCESS_DIR.mkdir(parents=True, exist_ok=True)
         ERROR_DIR.mkdir(parents=True, exist_ok=True)
         
+        # The selenium driver will be launched later when needed.
         self.driver = None
+        # A dictionary that stores the unique digital fingerprint of the last image. 
+        # Used to detect if the image has changed.
         self.last_hashes = {} 
+        # Counters for the end-of-batch report
         self.stats = {'total': 0, 'success': 0, 'failed': 0}
         
-        # ✅ AJOUT S3 et DB
+        #  Connection to the S3
         self.s3 = boto3.client('s3')
         self.bucket = os.getenv("S3_BUCKET_NAME")
         self.db = DatabaseManager()
     
+    # Scraper startup
     def start(self):
-        logger.info(f"Démarrage Batch {BATCH_ID}...")
+        logger.info(f"Batch Startup {BATCH_ID}...")
+        # click the Chrome browser
         self.driver = setup_driver()
     
+    # Scraper stopped
     def stop(self):
+        # Close Selenium
         if self.driver:
             self.driver.quit()
-        # ✅ Fermer la DB
+        # close database connection
         if self.db:
             self.db.close()
     
     def scrape_camera(self, url: str) -> bool:
+        # takes the camera name from the URL
         camera_name = get_camera_name_from_url(url)
+        # records in the processed camera counter
         self.stats['total'] += 1
         
+        # A sort for the entire scraping block.
+        # If a single line fails, we immediately enter the except block.
         try:
-            logger.info(f"Traitement: {camera_name}")
+            # camera processing log, to know where we are in the process
+            logger.info(f"Treatment: {camera_name}")
+            # Selenium take the url
             self.driver.get(url)
+            # Wait always 20 secondes
             wait = WebDriverWait(self.driver, 20)
             
-            # --- TENTATIVE DE CAPTURE ---
+            
             try:
+                # Wait until an "<img>" element is visible
                 target_img = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "img.firecam-image")))
+                # wait until the image's URL is displayed.
                 wait.until(lambda d: target_img.get_attribute("src") and len(target_img.get_attribute("src")) > 10)
+                # One more pose to make sure the image is loaded
                 time.sleep(2)
             except Exception:
-                logger.warning(f"Fallback conteneur pour {camera_name}")
+                # It says to look for these two elements to find a camera
+                # because not all AlertWildfire cameras have the same HTML code
+                logger.warning(f"Fallback container for {camera_name}")
                 target_img = self.driver.find_element(By.CSS_SELECTOR, ".ui-layout-center, #firecam-view")
 
-            # ✅ SAUVEGARDE LOCALE (pour debug)
+            # create the file name from the camera's name
             filename = f"{camera_name}.png"
+            # constructs the complete path with "/"
             filepath = SUCCESS_DIR / filename
+            # takes a screenshot of the image and not the entire page
             target_img.screenshot(str(filepath))
             
-            # ✅ UPLOAD S3
+            # construction of the path in the S3
             s3_path = f"raw/{BATCH_ID}/{filename}"
+            # Open the image file in binary read mode, because you need to read the raw bytes
             with open(filepath, 'rb') as f:
+                #sends files to the S3
                 self.s3.put_object(
                     Bucket=self.bucket,
                     Key=s3_path,
                     Body=f.read()
                 )
             
-            # ✅ INSERT DATABASE
+            # save image metadata
             self.db.insert_image(BATCH_ID, camera_name, s3_path)
-            
-            logger.info(f"✅ Sauvegardé: S3={s3_path}, Local={filepath}")
+            #Log successes with a path for debugging, both on S3 and locally
+            logger.info(f"Saving: S3={s3_path}, Local={filepath}")
+            # Increases the success counter
             self.stats['success'] += 1
             return True
 
+        # Capture any scraping errors
         except Exception as e:
-            logger.error(f"❌ ÉCHEC {camera_name}: {e}")
+            # Log the error with the camera name and the error message
+            logger.error(f"Failure {camera_name}: {e}")
+            # Encreases the error counter
             self.stats['failed'] += 1
             
+            # Take a screenshot of the page if there's an error
             try:
                 error_path = ERROR_DIR / f"{camera_name}_ERROR.png"
                 self.driver.save_screenshot(str(error_path))
@@ -282,41 +313,56 @@ class AlertWildfireScraper:
                 pass
             return False
 
+    # allows limiting the number of cameras for testing purposes
     def scrape_all(self, max_cameras: int = None):
+        # We slice if max_cameras is defined, otherwise we take all the URLs
         urls = CAMERA_URLS[:max_cameras] if max_cameras else CAMERA_URLS
-        logger.info(f"Lancement du batch sur {len(urls)} caméras...")
+        # Log the startup with the number of cameras
+        logger.info(f"Launching the batch on {len(urls)} cameras.")
+        # Loop to scrape URLs
         for url in urls:
             self.scrape_camera(url)
             time.sleep(1)
 
-# =============================================================================
 # MAIN
-# =============================================================================
 
 def main():
+    # reading the batch commands when the script is run
     parser = argparse.ArgumentParser()
+    # For limited the number of cameras
+    # --continuous to scrape all the cameras
     parser.add_argument('--continuous', '-c', action='store_true')
     parser.add_argument('--cameras', '-n', type=int, default=None)
     
+    # read the arguments passed in the bash command
     args = parser.parse_args()
     
+    #instantiate the scraper class
     scraper = AlertWildfireScraper()
     
     try:
+        # Chrome launcher
         scraper.start()
         
+        # Warning: If continuous is enabled, all images will always go into the same folder
+        # even if it's a different batch
         if args.continuous:
-            logger.warning("Mode continu activé : attention, tout ira dans le même dossier de batch.")
+            logger.warning("Continuous mode enabled: be aware that everything will go into the same batch folder.")
             while True:
+                # Loop to scrape all cameras
                 scraper.scrape_all(args.cameras)
                 time.sleep(DEFAULT_INTERVAL)
         else:
-            # MODE STANDARD POUR AIRFLOW (One Shot)
+            # Scrape all cameras and stop
+            #  for testing
             scraper.scrape_all(args.cameras)
-            
+
+    # using `finally` to ensure that it executes       
     finally:
+        # Stop chrome
         scraper.stop()
-        logger.info(f"Fin du Batch {BATCH_ID}. Résumé: {scraper.stats}")
+        # log the batch summary
+        logger.info(f"Batch End {BATCH_ID}. Summary: {scraper.stats}")
 
 if __name__ == "__main__":
     main()
