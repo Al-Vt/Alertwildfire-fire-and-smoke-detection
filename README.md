@@ -8,20 +8,11 @@ Built as a student project with a focus on production-grade MLOps practices: aut
 <img width="1095" height="840" alt="AlertWildFire" src="https://github.com/user-attachments/assets/3faa6753-9ebd-424a-a10b-394597154f3d" />
 (View from the Alertwildfire.org website)                        
 
+---
 
-## How it works
+## Architecture
 
-```
-AlertWildfire Cameras
-        ↓  scraped every 5 min (Airflow)
-    S3 (raw images)
-        ↓  YOLO inference
-    Detections → Neon PostgreSQL
-        ↓  drift check every hour
-    Retraining triggered on EC2 if needed
-```
-
-The scraper grabs frames from all 165 cameras, runs them through the model, and stores detections with confidence scores. An hourly DAG checks whether the score distribution has drifted from the training baseline — if it has, it triggers a retraining job on EC2.
+<img width="2040" height="1100" alt="Wildfire_pipeline" src="https://github.com/user-attachments/assets/0710902f-6b7d-452c-a606-b7a60f8ed452" />
 
 ---
 
@@ -54,11 +45,6 @@ ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward
 | Database | Neon PostgreSQL |
 | CI/CD | GitHub Actions |
 
----
-
-## Architecture
-
-<img width="2040" height="1100" alt="Wildfire_pipeline" src="https://github.com/user-attachments/assets/0710902f-6b7d-452c-a606-b7a60f8ed452" />
 
 ---
 
