@@ -6,7 +6,7 @@ ALERTWildfire.org operates 165 surveillance cameras across the western United St
 Built as a student project with a focus on production-grade MLOps practices: automated scraping, experiment tracking, drift monitoring, and a CI/CD pipeline.
 
 <img width="1095" height="840" alt="AlertWildFire" src="https://github.com/user-attachments/assets/3faa6753-9ebd-424a-a10b-394597154f3d" />
-(View from the Alertwildfire.org website)
+(View from the Alertwildfire.org website)                        
 ---
 
 ## How it works
