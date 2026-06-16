@@ -12,7 +12,8 @@ Built as a student project with a focus on production-grade MLOps practices: aut
 
 ## Architecture
 
-<img width="2040" height="1100" alt="Wildfire_pipeline" src="https://github.com/user-attachments/assets/0710902f-6b7d-452c-a606-b7a60f8ed452" />
+<img width="2040" height="1100" alt="Wildfire_pipeline" src="https://github.com/user-attachments/assets/39b26e90-e39a-4712-bf9f-b0592dd1ba1d" />
+
 
 ---
 
