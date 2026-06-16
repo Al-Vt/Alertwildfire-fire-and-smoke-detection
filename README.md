@@ -56,7 +56,7 @@ ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward
 
 ## Architecture
 
-<img width="2040" height="1100" alt="Wildfire_pipeline" src="https://github.com/user-attachments/assets/fcee580f-4a51-4fde-b9b0-c942a2730a2e" />
+<img width="2040" height="1100" alt="Wildfire_pipeline" src="https://github.com/user-attachments/assets/0710902f-6b7d-452c-a606-b7a60f8ed452" />
 
 ---
 
