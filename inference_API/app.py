@@ -3,6 +3,8 @@ from PIL import Image
 from ultralytics import YOLO
 import io
 
+# API to expose the Yolo model
+
 app = FastAPI()
 
 # Loading model

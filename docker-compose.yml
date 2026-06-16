@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
 
+# launches a PostgreSQL database
   postgres:
     image: postgres:13
     environment:
@@ -9,6 +10,7 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
 
+# Launches Airflow
   airflow-webserver:
     build:
       context: .

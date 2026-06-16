@@ -1,8 +1,13 @@
 name: Fire-detection
 
+# Docker environment
+
 docker_env:
   image: fire-detection-training
   volumes: ["$(pwd):/home/app"]
+
+  # Environmental variable
+
   environment: [
     "MLFLOW_TRACKING_URI",
     "AWS_ACCESS_KEY_ID",
@@ -11,6 +16,8 @@ docker_env:
     "S3_BUCKET",
     "DATA_YAML"
   ]
+
+# Training hyperparameters 
 
 entry_points:
   main:

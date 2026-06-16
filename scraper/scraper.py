@@ -23,16 +23,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-# Création d'un ID unique pour ce lancement (ex: 20260108_123000)
+# Create a unique identifier with the current time
 BATCH_ID = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-BASE_DIR = Path("alertwildfire_data")
-# Les images iront dans raw/20260108_123000/
+BASE_DIR = Path("alertwildfire_data")  # The root folder where everything is stored locally
+# Then we store the images that were successfully sent to the S3, and those that could not be sent
 SUCCESS_DIR = BASE_DIR / "raw" / BATCH_ID 
 ERROR_DIR = BASE_DIR / "errors" / BATCH_ID
 
-DEFAULT_INTERVAL = 300 
-PAGE_TIMEOUT = 45 
+DEFAULT_INTERVAL = 300  # 5 minute interval between scrapers
+PAGE_TIMEOUT = 45  # Waiting time before closing a page
 
 # List of all cameras on the AlertWildFire website
 CAMERA_URLS = [

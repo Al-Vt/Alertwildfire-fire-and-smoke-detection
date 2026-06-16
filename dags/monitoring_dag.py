@@ -20,7 +20,7 @@ def detect_drift():
     db.close() # Prevents memory leaks and unnecessary open connections
     # list of confidence scores
     confidences = [img['confidence'] for img in images if img.get('confidence')]
-    if not confidences: # si aucune donnée n'est valide
+    if not confidences:  # if no data is valid
         return 'no_drift_detected'
 
     # calculation of the average confidence
@@ -32,15 +32,19 @@ def detect_drift():
 def log_no_drift():
     print("No drift")
 
+# Function sending an alert email
 def notify_retraining_needed():
+    # Takes the sender and the recipient
     sender = os.getenv("ALERT_EMAIL_SENDER")
     receiver = os.getenv("ALERT_EMAIL_RECEIVER")
 
+    # write the email
     msg = MIMEText("Drift detected in model predictions. Retraining recommended.")
     msg["Subject"] = "ALERTE WILDFIRE, Drift detected"
     msg["From"] = sender
     msg["To"] = receiver
 
+    # to send via Gmail
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
     server.login(sender, os.getenv("ALERT_EMAIL_PASSWORD"))
     server.sendmail(sender, receiver, msg.as_string())

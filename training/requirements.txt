@@ -3,7 +3,7 @@ torchvision
 python-dotenv
 ultralytics
 mlflow
-pyfiglet
+pyfiglet  # Transforms text into ASCII
 pytest
 boto3
 optuna

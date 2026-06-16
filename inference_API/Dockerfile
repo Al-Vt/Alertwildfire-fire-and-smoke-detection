@@ -2,6 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# libgl1 used for the use of OpenCV, which processes images
+# The last line deletes the cache after installation 
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
