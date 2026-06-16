@@ -54,24 +54,9 @@ ALERTWildfire cameras run 24/7, so the dataset was intentionally balanced toward
 
 ---
 
-## Project layout
+## Architecture
 
-```
-├── training/
-│   ├── train.py            # Training entry point (supports --resume)
-│   ├── utils.py            # validate_metrics, upload_model_to_s3
-│   └── tests/              # pytest unit tests
-├── scraper/
-│   ├── scraper.py          # Selenium scraper for AlertWildfire
-│   └── database.py         # Neon DB interface
-├── dags/
-│   ├── scraper_dag.py              # ETL — every 5 min
-│   ├── monitoring_dag.py           # Drift detection — hourly
-│   └── continuous_training_dag.py  # SSH retraining on EC2
-├── .github/workflows/
-│   └── training.yml        # Run tests → build Docker image
-└── docker-compose.yml
-```
+<img width="2040" height="1100" alt="Wildfire_pipeline" src="https://github.com/user-attachments/assets/fcee580f-4a51-4fde-b9b0-c942a2730a2e" />
 
 ---
 
