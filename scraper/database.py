@@ -98,7 +98,7 @@ class DatabaseManager:
         query = """
         SELECT * FROM images 
         WHERE status = 'PROCESSED' 
-        ORDER BY captured_at ASC 
+        ORDER BY captured_at DESC 
         LIMIT %s;
         """
         try:
