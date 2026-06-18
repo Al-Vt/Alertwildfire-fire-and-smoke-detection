@@ -103,7 +103,7 @@ with DAG(
     dag_id='fire_detection_inference',
     default_args=default_args,
     description='Run YOLO inference on pending images and update Postgres',
-    schedule_interval='*/5 * * * *',
+    schedule_interval='*/10 * * * *',
     start_date=datetime(2026, 1, 1),
     catchup=False,
 ) as dag:

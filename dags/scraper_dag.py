@@ -30,7 +30,7 @@ with DAG(
     dag_id='fire_detection_scraper',
     default_args=default_args,
     description='Scrape AlertWildfire cameras every 5 minutes and upload to S3',
-    schedule_interval='*/5 * * * *',
+    schedule_interval='*/10 * * * *',
     start_date=datetime(2026, 1, 1),
     catchup=False,
 ) as dag:
