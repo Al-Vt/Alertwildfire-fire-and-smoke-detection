@@ -24,12 +24,12 @@ default_args = {
     'retry_delay': timedelta(minutes=2),
 }
 
-# DAG to scrape the AlertWidlFire website every 5 minutes
+# DAG to scrape the AlertWidlFire website every 10 minutes
 # and save it to S3
 with DAG(
     dag_id='fire_detection_scraper',
     default_args=default_args,
-    description='Scrape AlertWildfire cameras every 5 minutes and upload to S3',
+    description='Scrape AlertWildfire cameras every 10 minutes and upload to S3',
     schedule_interval='*/10 * * * *',
     start_date=datetime(2026, 1, 1),
     catchup=False,
