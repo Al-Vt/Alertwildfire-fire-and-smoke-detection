@@ -1,10 +1,9 @@
 
-
 # 🔥 Wildfire Detection — Automated Monitoring of Live Fire Cameras
 
 **An end-to-end MLOps pipeline that watches 124 live wildfire cameras, runs a fine-tuned YOLOv11 model on every snapshot, and emails an annotated alert the moment it spots fire or smoke — fully automated, 24/7.**
 
-[    ![🤗 Live Demo](https://img.shields.io/badge/%F0%9F%A4%97-Live%20Demo-yellow.svg)](https://huggingface.co/spaces/Alvlt/fire-detection)
+[     ![🤗 Live Demo](https://img.shields.io/badge/%F0%9F%A4%97-Live%20Demo-yellow.svg)](https://huggingface.co/spaces/Alvlt/fire-detection)
  ![CI](https://github.com/Al-Vt/Alertwildfire-fire-and-smoke-detection/actions/workflows/training.yml/badge.svg)
  ![Python](https://img.shields.io/badge/python-3.11-blue.svg)
  ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -77,33 +76,6 @@ Built as a student project, but engineered to production-grade MLOps standards: 
 
 The system is three independent Airflow DAGs coordinating through S3 (image storage) and a Neon PostgreSQL queue (state). Nothing talks directly to anything else, every stage reads and writes shared state, which keeps the pipeline resilient and observable.
 
-```mermaid
-flowchart LR
-    CAM["📷 124 live<br/>ALERTWildfire cameras"]
-
-    subgraph AF["Apache Airflow"]
-        SCR["Scraper DAG<br/>every 10 min"]
-        INF["Inference DAG<br/>every 10 min"]
-        MON["Monitoring DAG<br/>hourly"]
-    end
-
-    S3[("AWS S3<br/>raw snapshots")]
-    DB[("Neon PostgreSQL<br/>image queue + results")]
-    API["FastAPI + YOLOv11<br/>Hugging Face Spaces"]
-    MAIL["Email alert<br/>with bounding box"]
-
-    CAM -->|Selenium screenshot| SCR
-    SCR -->|upload image| S3
-    SCR -->|insert row, status = NEW| DB
-    INF -->|fetch NEW rows| DB
-    INF -->|download image| S3
-    INF -->|POST /predict| API
-    API -->|detections| INF
-    INF -->|status = PROCESSED + result| DB
-    INF -.->|fire detected| MAIL
-    MON -->|read recent confidence| DB
-    MON -.->|drift detected| MAIL
-```
 
 Full architecture overview:
 
@@ -268,6 +240,7 @@ EC2_KNOWN_HOSTS=
 ## CI/CD
 
 Every push or pull request to `main` triggers the [Training Pipeline CI](.github/workflows/training.yml) workflow:
+
 
 
 
